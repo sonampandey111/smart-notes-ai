@@ -1,0 +1,25 @@
+Introduction to Artificial Intelligence and Machine Learning
+
+Lecture Summary:
+Artificial Intelligence (AI) refers to the simulation of human intelligence in machines that are programmed to think and learn like humans. 
+
+1. Machine Learning (ML):
+Machine Learning is a subset of AI that allows systems to automatically learn and improve from experience without being explicitly programmed. ML algorithms use computational methods to "learn" information directly from data.
+
+Types of Machine Learning:
+- Supervised Learning: Models are trained using labeled datasets where the input and corresponding output are provided (e.g., Regression, Classification).
+- Unsupervised Learning: Models discover hidden patterns or groupings in unlabeled datasets (e.g., Clustering, Dimensionality Reduction).
+- Reinforcement Learning: An agent learns to make decisions by taking actions in an environment to maximize cumulative rewards.
+
+2. Deep Learning and Neural Networks:
+Deep Learning is a specialized branch of Machine Learning based on Artificial Neural Networks with multiple layers (hence "deep"). It excels at processing unstructured data like text, images, and audio.
+
+Key Applications:
+- Natural Language Processing (NLP): Chatbots, Translation, Summarization.
+- Computer Vision: Autonomous driving, Medical scan analysis.
+- Predictive Analytics: Stock market forecasting, Weather prediction.
+
+Important Exam Questions to Review:
+1. What is the fundamental difference between Supervised and Unsupervised Learning?
+2. Explain how a Neural Network learns weights through Backpropagation.
+3. What are the key ethical challenges associated with AI adoption?
