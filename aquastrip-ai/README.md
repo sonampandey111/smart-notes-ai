@@ -1,11 +1,12 @@
 # 💧 AquaStrip AI – Water Quality Scanner via Smartphone Camera
 
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-GitHub%20Pages-success?style=for-the-badge&logo=github)](https://sonampandey111.github.io/aquastrip-ai/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![React 19](https://img.shields.io/badge/React-19.2-cyan.svg)](https://react.dev)
 [![Vite 8](https://img.shields.io/badge/Vite-8.3-purple.svg)](https://vite.dev)
-[![Tailwind CSS v4](https://img.shields.io/badge/Tailwind-v4.0-38bdf8.svg)](https://tailwindcss.com)
-[![Status: Production Ready](https://img.shields.io/badge/Status-Hackathon%20Ready-emerald.svg)]()
+[![Status: Production Ready](https://img.shields.io/badge/Status-Live%20Deployed-emerald.svg)]()
 
+> 🌐 **Live Website Link**: **[https://sonampandey111.github.io/aquastrip-ai/](https://sonampandey111.github.io/aquastrip-ai/)**  
 > **"Low-Cost Hardware (₹5-10 Strip) + Smartphone Camera Computer Vision = Pure Innovation."**  
 > *Bazaar me milne wali ₹5-10 ki litmus/test strip ko paani me duba kar phone camera ke aage rakho — AI turant batayega paani peene layak hai ya nahi, aur RO ya ubaalna zaroori hai ya nahi.*
 
