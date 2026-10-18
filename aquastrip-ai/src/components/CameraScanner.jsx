@@ -1,4 +1,3 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react';
 import {
   Camera,
   Upload,
@@ -11,7 +10,9 @@ import {
   Sliders,
   Sparkles,
   Layers,
-  Eye
+  Eye,
+  Bot,
+  Loader2
 } from 'lucide-react';
 import {
   extractRegionColor,
@@ -26,6 +27,10 @@ import {
   ALKALINITY_PALETTE,
   DEMO_WATER_SAMPLES
 } from '../utils/calibrationData';
+import {
+  analyzeStripWithGemini,
+  getGeminiApiKey
+} from '../services/geminiService';
 
 export default function CameraScanner({
   lang,
@@ -126,9 +131,12 @@ export default function CameraScanner({
     };
   }, []);
 
-  // Process and Analyze Canvas Image
+  const [isAiAnalyzing, setIsAiAnalyzing] = useState(false);
+  const [aiModelUsed, setAiModelUsed] = useState(null);
+
+  // Process and Analyze Canvas Image with Dual-Engine (Gemini Vision API + Local Optical CV)
   const processCanvasAndAnalyze = useCallback(
-    (canvas) => {
+    async (canvas) => {
       const ctx = canvas.getContext('2d');
       const w = canvas.width;
       const h = canvas.height;
@@ -149,7 +157,6 @@ export default function CameraScanner({
 
         phResult = matchCalibratedColor(sampledRgb, PH_PALETTE);
 
-        // For single pH litmus strip, provide standard baselines
         hardnessResult = {
           interpolatedValue: 100,
           confidence: 85,
@@ -207,6 +214,66 @@ export default function CameraScanner({
         alkalinityResult = matchCalibratedColor(alkRgb, ALKALINITY_PALETTE);
       }
 
+      const previewDataUrl = canvas.toDataURL('image/jpeg', 0.85);
+      const apiKey = getGeminiApiKey();
+
+      // Check if Gemini Vision AI can be invoked
+      if (apiKey) {
+        setIsAiAnalyzing(true);
+        try {
+          const aiResponse = await analyzeStripWithGemini(previewDataUrl, stripType);
+          if (aiResponse.success && aiResponse.data) {
+            const aiData = aiResponse.data;
+            setAiModelUsed(aiResponse.modelUsed);
+            setIsAiAnalyzing(false);
+
+            onAnalyzeComplete({
+              parameters: {
+                ph: {
+                  ...phResult,
+                  value: typeof aiData.ph === 'number' ? aiData.ph : phResult.interpolatedValue
+                },
+                hardness: {
+                  ...hardnessResult,
+                  value: typeof aiData.hardness_ppm === 'number' ? aiData.hardness_ppm : hardnessResult.interpolatedValue
+                },
+                chlorine: {
+                  ...chlorineResult,
+                  value: typeof aiData.chlorine_ppm === 'number' ? aiData.chlorine_ppm : chlorineResult.interpolatedValue
+                },
+                alkalinity: {
+                  ...alkalinityResult,
+                  value: typeof aiData.alkalinity_ppm === 'number' ? aiData.alkalinity_ppm : alkalinityResult.interpolatedValue
+                }
+              },
+              geminiAiVerdict: {
+                status: aiData.status,
+                statusBadge: aiData.status_badge,
+                statusBadgeHi: aiData.status_badge_hi,
+                potabilityScore: aiData.potability_score,
+                aiVerdict: aiData.ai_verdict,
+                aiVerdictHi: aiData.ai_verdict_hi,
+                filtrationAdvice: aiData.filtration_advice,
+                healthAdvisory: aiData.health_advisory,
+                healthAdvisoryHi: aiData.health_advisory_hi,
+                modelUsed: aiResponse.modelUsed
+              },
+              capturedPreviewUrl: previewDataUrl,
+              stripType,
+              engine: 'gemini_vision_api',
+              timestamp: new Date().toISOString()
+            });
+            return;
+          }
+        } catch (err) {
+          console.warn('Gemini AI Vision call fallback to Optical CV:', err);
+        } finally {
+          setIsAiAnalyzing(false);
+        }
+      }
+
+      // Default / Fallback: Optical Computer Vision Engine
+      setAiModelUsed(null);
       onAnalyzeComplete({
         parameters: {
           ph: { ...phResult, value: phResult.interpolatedValue },
@@ -214,8 +281,9 @@ export default function CameraScanner({
           chlorine: { ...chlorineResult, value: chlorineResult.interpolatedValue },
           alkalinity: { ...alkalinityResult, value: alkalinityResult.interpolatedValue }
         },
-        capturedPreviewUrl: canvas.toDataURL('image/jpeg', 0.85),
+        capturedPreviewUrl: previewDataUrl,
         stripType,
+        engine: 'optical_cv',
         timestamp: new Date().toISOString()
       });
     },
@@ -467,6 +535,28 @@ export default function CameraScanner({
             muted
             className="w-full h-full object-cover"
           />
+        )}
+
+        {/* Gemini AI Processing Overlay */}
+        {isAiAnalyzing && (
+          <div className="absolute inset-0 z-30 bg-slate-950/85 backdrop-blur-sm flex flex-col items-center justify-center space-y-3 animate-fadeIn">
+            <div className="relative flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-tr from-purple-600 via-cyan-500 to-sky-400 p-[2px] shadow-2xl">
+              <div className="w-full h-full bg-slate-950 rounded-[14px] flex items-center justify-center">
+                <Bot className="w-8 h-8 text-purple-400 animate-pulse" />
+              </div>
+            </div>
+            <div className="text-center space-y-1">
+              <div className="flex items-center justify-center space-x-2 text-white font-bold text-sm">
+                <Sparkles className="w-4 h-4 text-purple-400" />
+                <span>Google Gemini AI Vision</span>
+              </div>
+              <p className="text-xs text-purple-300">
+                {lang === 'hi'
+                  ? 'स्ट्रिप के रासायनिक स्पेक्ट्रम का AI विश्लेषण हो रहा है...'
+                  : 'Multimodal AI analyzing chemical spectrum & contaminants...'}
+              </p>
+            </div>
+          </div>
         )}
 
         {/* Viewfinder Target Reticle Overlay (Active when camera or image is shown) */}

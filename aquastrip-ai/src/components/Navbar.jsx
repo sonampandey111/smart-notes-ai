@@ -1,4 +1,5 @@
-import { Droplet, Info, Palette, History, Languages, ShieldCheck } from 'lucide-react';
+import React from 'react';
+import { Droplet, Info, Palette, History, Languages, Bot, Sparkles } from 'lucide-react';
 
 const GithubIcon = ({ className }) => (
   <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -7,7 +8,16 @@ const GithubIcon = ({ className }) => (
   </svg>
 );
 
-export default function Navbar({ lang, setLang, t, onOpenHowItWorks, onOpenChart, onOpenHistory }) {
+export default function Navbar({
+  lang,
+  setLang,
+  t,
+  onOpenHowItWorks,
+  onOpenChart,
+  onOpenHistory,
+  onOpenApiSettings,
+  hasApiKey
+}) {
   return (
     <header className="sticky top-0 z-40 w-full glass-panel border-b border-slate-800/80 shadow-lg">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
@@ -38,11 +48,28 @@ export default function Navbar({ lang, setLang, t, onOpenHowItWorks, onOpenChart
         </div>
 
         {/* Right Navigation & Tools */}
-        <div className="flex items-center space-x-2 sm:space-x-3">
+        <div className="flex items-center space-x-1.5 sm:space-x-3">
+          {/* Gemini AI API Button */}
+          <button
+            onClick={onOpenApiSettings}
+            className={`flex items-center space-x-1.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold border transition-all ${
+              hasApiKey
+                ? 'bg-purple-950/50 text-purple-300 border-purple-500/40 hover:bg-purple-900/50 shadow-sm'
+                : 'bg-slate-800/60 text-slate-300 border-slate-700/60 hover:bg-slate-800'
+            }`}
+            title="Configure Google Gemini Vision API"
+          >
+            <Bot className={`w-3.5 h-3.5 ${hasApiKey ? 'text-purple-400' : 'text-slate-400'}`} />
+            <span className="hidden sm:inline">
+              {hasApiKey ? 'Gemini AI' : 'AI API'}
+            </span>
+            <span className={`w-1.5 h-1.5 rounded-full ${hasApiKey ? 'bg-emerald-400 animate-pulse' : 'bg-slate-500'}`} />
+          </button>
+
           {/* How It Works Button */}
           <button
             onClick={onOpenHowItWorks}
-            className="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-slate-300 hover:text-white bg-slate-800/60 hover:bg-slate-800 border border-slate-700/60 transition-colors"
+            className="flex items-center space-x-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-medium text-slate-300 hover:text-white bg-slate-800/60 hover:bg-slate-800 border border-slate-700/60 transition-colors"
             title="How AquaStrip AI Works"
           >
             <Info className="w-3.5 h-3.5 text-cyan-400" />
@@ -52,7 +79,7 @@ export default function Navbar({ lang, setLang, t, onOpenHowItWorks, onOpenChart
           {/* Color Chart Reference */}
           <button
             onClick={onOpenChart}
-            className="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-slate-300 hover:text-white bg-slate-800/60 hover:bg-slate-800 border border-slate-700/60 transition-colors"
+            className="flex items-center space-x-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-medium text-slate-300 hover:text-white bg-slate-800/60 hover:bg-slate-800 border border-slate-700/60 transition-colors"
             title="Calibrated Color Chart"
           >
             <Palette className="w-3.5 h-3.5 text-purple-400" />
@@ -62,7 +89,7 @@ export default function Navbar({ lang, setLang, t, onOpenHowItWorks, onOpenChart
           {/* Scan History */}
           <button
             onClick={onOpenHistory}
-            className="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-slate-300 hover:text-white bg-slate-800/60 hover:bg-slate-800 border border-slate-700/60 transition-colors"
+            className="flex items-center space-x-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-medium text-slate-300 hover:text-white bg-slate-800/60 hover:bg-slate-800 border border-slate-700/60 transition-colors"
             title="Scan History"
           >
             <History className="w-3.5 h-3.5 text-emerald-400" />
@@ -72,16 +99,16 @@ export default function Navbar({ lang, setLang, t, onOpenHowItWorks, onOpenChart
           {/* Bilingual Language Switcher */}
           <button
             onClick={() => setLang(lang === 'en' ? 'hi' : 'en')}
-            className="flex items-center space-x-1.5 px-2.5 py-1.5 rounded-lg text-xs font-bold text-cyan-300 bg-cyan-950/40 hover:bg-cyan-900/60 border border-cyan-800/50 transition-colors shadow-sm"
+            className="flex items-center space-x-1 px-2 py-1.5 rounded-lg text-xs font-bold text-cyan-300 bg-cyan-950/40 hover:bg-cyan-900/60 border border-cyan-800/50 transition-colors shadow-sm"
             title="Switch Language / भाषा बदलें"
           >
             <Languages className="w-3.5 h-3.5" />
-            <span>{lang === 'en' ? 'हिन्दी' : 'English'}</span>
+            <span>{lang === 'en' ? 'हिन्दी' : 'EN'}</span>
           </button>
 
           {/* GitHub Link */}
           <a
-            href="https://github.com/sonampandey111/aquastrip-ai"
+            href="https://github.com/sonampandey111/smart-notes-ai/tree/main/aquastrip-ai"
             target="_blank"
             rel="noopener noreferrer"
             className="p-2 text-slate-400 hover:text-white hover:bg-slate-800/80 rounded-lg transition-colors border border-transparent hover:border-slate-700"

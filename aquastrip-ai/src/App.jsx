@@ -7,9 +7,11 @@ import CalibrationChartModal from './components/CalibrationChartModal';
 import WaterReportModal from './components/WaterReportModal';
 import HowItWorksModal from './components/HowItWorksModal';
 import HistoryDrawer from './components/HistoryDrawer';
+import ApiSettingsModal from './components/ApiSettingsModal';
 import { analyzeWaterQuality } from './utils/waterQualityEngine';
 import { TRANSLATIONS } from './utils/translations';
 import { DEMO_WATER_SAMPLES } from './utils/calibrationData';
+import { getGeminiApiKey } from './services/geminiService';
 import { Droplet, Heart, Sparkles, ShieldCheck, Smartphone } from 'lucide-react';
 
 const GithubIcon = ({ className }) => (
@@ -31,6 +33,8 @@ export default function App() {
   const [isChartOpen, setIsChartOpen] = useState(false);
   const [isReportOpen, setIsReportOpen] = useState(false);
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
+  const [isApiSettingsOpen, setIsApiSettingsOpen] = useState(false);
+  const [hasApiKey, setHasApiKey] = useState(() => getGeminiApiKey());
 
   // Scan History in LocalStorage
   const [history, setHistory] = useState(() => {
@@ -96,13 +100,51 @@ export default function App() {
   }, []);
 
   // Handle Analysis Completed from Camera / Image / Demo
-  const handleAnalyzeComplete = ({ parameters, capturedPreviewUrl, stripType, timestamp }) => {
-    const evaluation = analyzeWaterQuality(parameters);
+  const handleAnalyzeComplete = ({
+    parameters,
+    geminiAiVerdict,
+    capturedPreviewUrl,
+    stripType,
+    engine,
+    timestamp
+  }) => {
+    let evaluation = analyzeWaterQuality(parameters);
+
+    if (geminiAiVerdict) {
+      evaluation = {
+        ...evaluation,
+        status: geminiAiVerdict.status || evaluation.status,
+        statusBadge: geminiAiVerdict.statusBadge || evaluation.statusBadge,
+        statusBadgeHi: geminiAiVerdict.statusBadgeHi || evaluation.statusBadgeHi,
+        potabilityScore:
+          typeof geminiAiVerdict.potabilityScore === 'number'
+            ? geminiAiVerdict.potabilityScore
+            : evaluation.potabilityScore,
+        healthSummary: geminiAiVerdict.healthAdvisory || evaluation.healthSummary,
+        healthSummaryHi: geminiAiVerdict.healthAdvisoryHi || evaluation.healthSummaryHi,
+        aiVerdict: geminiAiVerdict.aiVerdict,
+        aiVerdictHi: geminiAiVerdict.aiVerdictHi,
+        recommendations:
+          geminiAiVerdict.filtrationAdvice && geminiAiVerdict.filtrationAdvice.length > 0
+            ? geminiAiVerdict.filtrationAdvice.map((adv, i) => ({
+                id: 'ai_rec_' + i,
+                title: adv,
+                titleHi: adv,
+                urgency: geminiAiVerdict.status === 'toxic' ? 'high' : 'medium',
+                desc: 'Prescribed by Google Gemini Multimodal Vision AI Model.',
+                descHi: 'Google Gemini Multimodal Vision AI मॉडल द्वारा अनुशंसित।'
+              }))
+            : evaluation.recommendations
+      };
+    }
+
     setAnalysisResult({
       parameters,
       evaluation,
+      geminiAiVerdict,
       capturedPreviewUrl,
       stripType,
+      engine,
       timestamp
     });
 
@@ -145,6 +187,8 @@ export default function App() {
         onOpenHowItWorks={() => setIsHowItWorksOpen(true)}
         onOpenChart={() => setIsChartOpen(true)}
         onOpenHistory={() => setIsHistoryOpen(true)}
+        onOpenApiSettings={() => setIsApiSettingsOpen(true)}
+        hasApiKey={Boolean(hasApiKey)}
       />
 
       {/* Main Content Area */}
@@ -266,6 +310,13 @@ export default function App() {
         onSelectScan={(scan) => setAnalysisResult(scan)}
         onClearHistory={handleClearHistory}
         lang={lang}
+      />
+
+      <ApiSettingsModal
+        isOpen={isApiSettingsOpen}
+        onClose={() => setIsApiSettingsOpen(false)}
+        lang={lang}
+        onSaveSuccess={() => setHasApiKey(getGeminiApiKey())}
       />
     </div>
   );

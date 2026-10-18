@@ -13,7 +13,8 @@ import {
   TrendingUp,
   Droplets,
   Layers,
-  Activity
+  Activity,
+  Bot
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
@@ -96,15 +97,24 @@ export default function ResultsPanel({
         <div className="flex flex-col md:flex-row items-center justify-between gap-6">
           {/* Left: Verdict Status Badge & Summary */}
           <div className="space-y-3 text-center md:text-left">
-            <div className={`inline-flex items-center space-x-2 px-3.5 py-1 rounded-full text-xs font-black tracking-wide border uppercase ${badgeBg}`}>
-              {isSafe ? (
-                <ShieldCheck className="w-4 h-4 text-emerald-400" />
-              ) : isModerate ? (
-                <AlertTriangle className="w-4 h-4 text-amber-400" />
-              ) : (
-                <ShieldAlert className="w-4 h-4 text-rose-400 animate-pulse" />
+            <div className="flex flex-wrap items-center justify-center md:justify-start gap-2">
+              <div className={`inline-flex items-center space-x-2 px-3.5 py-1 rounded-full text-xs font-black tracking-wide border uppercase ${badgeBg}`}>
+                {isSafe ? (
+                  <ShieldCheck className="w-4 h-4 text-emerald-400" />
+                ) : isModerate ? (
+                  <AlertTriangle className="w-4 h-4 text-amber-400" />
+                ) : (
+                  <ShieldAlert className="w-4 h-4 text-rose-400 animate-pulse" />
+                )}
+                <span>{lang === 'hi' ? statusBadgeHi : statusBadge}</span>
+              </div>
+
+              {analysisResult.geminiAiVerdict && (
+                <div className="inline-flex items-center space-x-1.5 px-2.5 py-1 rounded-full bg-purple-500/20 border border-purple-500/40 text-[10px] font-bold text-purple-300">
+                  <Bot className="w-3.5 h-3.5 text-purple-400" />
+                  <span>Gemini Vision AI Verified</span>
+                </div>
               )}
-              <span>{lang === 'hi' ? statusBadgeHi : statusBadge}</span>
             </div>
 
             <h2 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
@@ -116,7 +126,11 @@ export default function ResultsPanel({
             </h2>
 
             <p className="text-xs sm:text-sm text-slate-300 max-w-xl leading-relaxed">
-              {lang === 'hi' ? healthSummaryHi : healthSummary}
+              {analysisResult.geminiAiVerdict
+                ? (lang === 'hi'
+                    ? (analysisResult.geminiAiVerdict.aiVerdictHi || analysisResult.geminiAiVerdict.aiVerdict)
+                    : analysisResult.geminiAiVerdict.aiVerdict)
+                : (lang === 'hi' ? healthSummaryHi : healthSummary)}
             </p>
 
             <div className="flex flex-wrap items-center justify-center md:justify-start gap-2 pt-2">
