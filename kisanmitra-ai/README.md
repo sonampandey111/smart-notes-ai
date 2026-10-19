@@ -3,7 +3,16 @@
 [![Vite](https://img.shields.io/badge/Vite-8.3-646CFF?logo=vite&logoColor=white)](https://vitejs.dev/)
 [![React](https://img.shields.io/badge/React-19.2-61DAFB?logo=react&logoColor=black)](https://react.dev/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-v4-38B2AC?logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
+[![GitHub Pages](https://img.shields.io/badge/Live_Website-GitHub_Pages-2ea44f?logo=githubpages&logoColor=white)](https://sonampandey111.github.io/kisanmitra-ai/)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+
+---
+
+### 🌐 Official Live Website Link
+👉 **Live Application**: **[https://sonampandey111.github.io/kisanmitra-ai/](https://sonampandey111.github.io/kisanmitra-ai/)**  
+*(Click to open and test live in any mobile or desktop browser)*
+
+---
 
 > **"Kisan ko pata nahi kab beej boye, kab dawa dale, kaha beche"**  
 > **किसान मित्र AI** solves India's core agricultural bottlenecks by combining **Computer Vision crop disease diagnosis**, **real-time weather spraying windows**, **satellite NDVI soil & vegetation telemetry**, and **live APMC mandi marketplace trading**.

@@ -43,6 +43,15 @@ export default function Footer({ lang }) {
               {lang === 'hi' ? 'महत्वपूर्ण कृषि पोर्टल' : 'Official Agri Portals'}
             </span>
             <a
+              href="https://sonampandey111.github.io/kisanmitra-ai/"
+              target="_blank"
+              rel="noreferrer"
+              className="text-emerald-700 font-bold hover:underline flex items-center gap-1"
+            >
+              <span>🌐 आधिकारिक लाइव वेबसाइट (Live Website)</span>
+              <ExternalLink className="w-3 h-3" />
+            </a>
+            <a
               href="https://enam.gov.in"
               target="_blank"
               rel="noreferrer"

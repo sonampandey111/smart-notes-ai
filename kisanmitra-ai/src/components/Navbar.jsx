@@ -1,7 +1,7 @@
 import React from 'react';
 import { translations } from '../data/translations';
 import { AGRI_REGIONS } from '../services/weatherService';
-import { Sprout, Camera, CloudSun, CalendarDays, Satellite, TrendingUp, MessageSquareText, Globe, MapPin, Volume2 } from 'lucide-react';
+import { Sprout, Camera, CloudSun, CalendarDays, Satellite, TrendingUp, MessageSquareText, Globe, MapPin, Volume2, ExternalLink } from 'lucide-react';
 
 export default function Navbar({
   lang,
@@ -37,7 +37,20 @@ export default function Navbar({
             </span>
           </div>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
+            {/* Live Website Link */}
+            <a
+              href="https://sonampandey111.github.io/kisanmitra-ai/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 bg-emerald-400 hover:bg-emerald-300 text-slate-950 font-extrabold px-2.5 py-0.5 rounded-full text-xs shadow-xs transition-colors"
+              title="Open Official Live Website"
+            >
+              <span className="w-2 h-2 rounded-full bg-emerald-800 animate-ping"></span>
+              <span>Live Website</span>
+              <ExternalLink className="w-3 h-3 text-slate-950" />
+            </a>
+
             {/* Region Selector */}
             <div className="flex items-center gap-1.5 bg-emerald-900/40 px-2 py-0.5 rounded-md border border-emerald-600/40 text-xs">
               <MapPin className="w-3.5 h-3.5 text-emerald-300" />
